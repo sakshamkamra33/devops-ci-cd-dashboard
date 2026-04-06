@@ -85,9 +85,9 @@ docker run -p 5000:5000 devops-project
 ```
 ---
 📸 Output
-CI/CD Pipeline: ✅ Passing
-Deployment: ✅ Live
-Status: Running
+- CI/CD Pipeline: ✅ Passing
+- Deployment: ✅ Live
+- Status: Running
 ---
 💡 Key Highlights
 
