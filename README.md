@@ -91,8 +91,8 @@ Status: Running
 ---
 💡 Key Highlights
 
-✔ End-to-end DevOps pipeline
-✔ Automated testing & deployment
-✔ Real-world project setup
-✔ Production-ready structure
+- End-to-end DevOps pipeline
+- Automated testing & deployment
+- Real-world project setup
+- Production-ready structure
 ---
