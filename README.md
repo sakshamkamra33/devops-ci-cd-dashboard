@@ -2,10 +2,6 @@
 
 [![CI/CD](https://github.com/sakshamkamra33/devops-project/actions/workflows/ci.yml/badge.svg)]
 
-# 🚀 DevOps CI/CD Flask Project
-
-![CI/CD](https://github.com/sakshamkamra33/devops-project/actions/workflows/ci.yml/badge.svg)
-
 ## 🌍 Live Demo
 👉 https://devops-project-1hhi.onrender.com
 
