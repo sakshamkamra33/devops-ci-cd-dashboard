@@ -10,10 +10,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: "3.9"
 
@@ -25,10 +25,10 @@ jobs:
       run: |
         pytest
 
-    # ✅ Proper Docker setup
+    # ✅ Correct Docker setup
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
 
     - name: Build Docker image
       run: |
-        docker build -t devops-app .
+        docker build -t devops-app:latest .
