@@ -92,25 +92,34 @@ cd devops-project
 pip install -r requirements.txt
 python app.py
 ```
-🐳 Docker Run
+🐳 Run with Docker
 ```
-docker build -t devops-project .
-docker run -p 5000:5000 devops-project
+docker build -t devops-dashboard .
+docker run -p 5000:5000 devops-dashboard
 ```
 ---
-📸 Output
-- CI/CD Pipeline: ✅ Passing
-- Deployment: ✅ Live
-- Status: Running
----
-💡 Key Highlights
 
-- End-to-end DevOps pipeline
-- Automated testing & deployment
-- Real-world project setup
-- Production-ready structure
+📊 Dashboard Highlights
+- Real-time service status
+- Version tracking
+- API metrics visualization
+- Deployment timeline
+- Logs simulation
 ---
+💡 What Makes This Project Special
+- End-to-end DevOps lifecycle implementation
+- Combines Development + Operations + Monitoring
+- Demonstrates real-world CI/CD practices
+- Clean UI with meaningful system insights
+
+  ---
 
 👨‍💻 Author
 
 - Saksham Kamra
+
+  ---
+
+⭐ If you like this project
+
+Give it a ⭐ on GitHub!
