@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DevOps Final Dashboard</title>
+<title>DevOps Ultra Dashboard</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -29,7 +29,6 @@ body {
     padding: 30px;
     border-radius: 12px;
     text-align: center;
-    box-shadow: 0 0 20px rgba(0,0,0,0.5);
 }
 
 input {
@@ -78,12 +77,7 @@ button {
     padding: 20px;
     border-radius: 10px;
     width: 200px;
-    transition: 0.3s;
     box-shadow: 0 0 15px rgba(34,197,94,0.2);
-}
-
-.card:hover {
-    transform: translateY(-5px);
 }
 
 .chart, .logs, .timeline {
@@ -97,6 +91,17 @@ button {
     height: 150px;
     overflow-y: auto;
     font-family: monospace;
+}
+
+/* ALERT */
+#alertBox {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: red;
+    padding: 10px;
+    border-radius: 6px;
+    display: none;
 }
 </style>
 </head>
@@ -126,36 +131,50 @@ button {
 
 <div class="main">
 
-<h2>Final DevOps Dashboard</h2>
+<h2>Ultra DevOps Dashboard</h2>
 
+<!-- MAIN CARDS -->
 <div class="cards">
-    <div class="card"><h4>Status</h4><p id="status">Loading...</p></div>
-    <div class="card"><h4>Version</h4><p id="version">Loading...</p></div>
+    <div class="card"><h4>Status</h4><p id="status">--</p></div>
+    <div class="card"><h4>Version</h4><p id="version">--</p></div>
     <div class="card"><h4>Uptime</h4><p>99.99%</p></div>
     <div class="card"><h4>Env</h4><p>Production</p></div>
 </div>
 
+<!-- SYSTEM CARDS -->
+<div class="cards">
+    <div class="card"><h4>CPU Usage</h4><p id="cpu">--%</p></div>
+    <div class="card"><h4>Memory Usage</h4><p id="memory">--%</p></div>
+    <div class="card"><h4>CI/CD</h4><p id="cicd">Checking...</p></div>
+</div>
+
+<!-- CHART -->
 <div class="chart">
-    <h3>API Metrics</h3>
+    <h3>Live API Metrics</h3>
     <canvas id="chart"></canvas>
 </div>
 
+<!-- TIMELINE -->
 <div class="timeline">
     <h3>Deployment Timeline</h3>
     <p>✔ Code pushed</p>
     <p>✔ Tests passed</p>
     <p>✔ Docker built</p>
-    <p>✔ Deployed on Render</p>
+    <p>✔ Deployed</p>
 </div>
 
+<!-- LOGS -->
 <div class="logs" id="logs"></div>
 
 </div>
 </div>
 
+<!-- ALERT -->
+<div id="alertBox">⚠️ High CPU Usage!</div>
+
 <script>
 
-/* 🔐 LOGIN */
+/* LOGIN */
 async function enter() {
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
@@ -175,14 +194,15 @@ async function enter() {
         document.getElementById("dashboard").style.display = "block";
 
         loadData();
+        startAutoRefresh();
         generateLogs();
-        startAutoRefresh();   // 🔥 NEW
+        simulateSystem();
     } else {
         alert("Invalid credentials");
     }
 }
 
-/* 🔑 LOAD DATA */
+/* LOAD STATUS */
 async function loadData() {
     const token = localStorage.getItem("token");
 
@@ -192,29 +212,21 @@ async function loadData() {
 
     const data = await res.json();
 
-    const statusEl = document.getElementById('status');
-
     if (data.status === "Running") {
-        statusEl.innerHTML = "🟢 Running";
-        statusEl.style.color = "#22c55e";
+        document.getElementById("status").innerHTML = "🟢 Running";
     } else {
-        statusEl.innerHTML = "🔴 Down";
-        statusEl.style.color = "red";
+        document.getElementById("status").innerHTML = "🔴 Down";
     }
 
-    document.getElementById('version').innerText = data.version || "N/A";
-
-    updateChart(); // 🔥 live update
+    document.getElementById("version").innerText = data.version;
 }
 
-/* 🔄 AUTO REFRESH EVERY 5 SEC */
+/* AUTO REFRESH */
 function startAutoRefresh() {
-    setInterval(() => {
-        loadData();
-    }, 5000);
+    setInterval(loadData, 5000);
 }
 
-/* 📊 CHART (LIVE) */
+/* CHART */
 let chart;
 
 function createChart() {
@@ -227,28 +239,15 @@ function createChart() {
                 data: [],
                 borderColor: "#22c55e",
                 backgroundColor: "rgba(34,197,94,0.2)",
-                fill: true,
-                tension: 0.4
+                fill: true
             }]
-        },
-        options: {
-            plugins: {
-                legend: { labels: { color: "white" } }
-            },
-            scales: {
-                x: { ticks: { color: "white" } },
-                y: { ticks: { color: "white" } }
-            }
         }
     });
 }
 
-/* 📈 UPDATE CHART WITH RANDOM REALISTIC DATA */
 function updateChart() {
-    if (!chart) return;
-
     const time = new Date().toLocaleTimeString();
-    const value = Math.floor(Math.random() * 50) + 70; // simulate API time
+    const value = Math.floor(Math.random() * 50) + 70;
 
     chart.data.labels.push(time);
     chart.data.datasets[0].data.push(value);
@@ -261,16 +260,41 @@ function updateChart() {
     chart.update();
 }
 
-/* 📜 ANIMATED LOGS */
+/* SYSTEM SIMULATION */
+function simulateSystem() {
+    setInterval(() => {
+        const cpu = Math.floor(Math.random() * 100);
+        const memory = Math.floor(Math.random() * 100);
+
+        document.getElementById("cpu").innerText = cpu + "%";
+        document.getElementById("memory").innerText = memory + "%";
+
+        updateChart();
+
+        if (cpu > 85) showAlert();
+
+        document.getElementById("cicd").innerText = "✅ Passing";
+    }, 3000);
+}
+
+/* ALERT */
+function showAlert() {
+    const box = document.getElementById("alertBox");
+    box.style.display = "block";
+
+    setTimeout(() => {
+        box.style.display = "none";
+    }, 3000);
+}
+
+/* LOGS */
 function generateLogs() {
     const logs = document.getElementById("logs");
     const msgs = [
         "🚀 Deploy started...",
         "🧪 Running tests...",
-        "🐳 Building Docker image...",
-        "📦 Pushing to registry...",
-        "☁️ Deploying to Render...",
-        "✅ Live in production!"
+        "🐳 Docker build success",
+        "☁️ Deployment complete"
     ];
 
     let i = 0;
@@ -281,10 +305,10 @@ function generateLogs() {
             logs.scrollTop = logs.scrollHeight;
             i++;
         }
-    }, 1200);
+    }, 1500);
 }
 
-/* INIT CHART */
+/* INIT */
 createChart();
 
 </script>
