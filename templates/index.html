@@ -79,6 +79,7 @@ button {
     border-radius: 10px;
     width: 200px;
     transition: 0.3s;
+    box-shadow: 0 0 15px rgba(34,197,94,0.2);
 }
 
 .card:hover {
@@ -175,12 +176,13 @@ async function enter() {
 
         loadData();
         generateLogs();
+        startAutoRefresh();   // 🔥 NEW
     } else {
         alert("Invalid credentials");
     }
 }
 
-/* 🔑 PROTECTED API */
+/* 🔑 LOAD DATA */
 async function loadData() {
     const token = localStorage.getItem("token");
 
@@ -190,56 +192,100 @@ async function loadData() {
 
     const data = await res.json();
 
-    document.getElementById('status').innerText = data.status || "Unknown";
+    const statusEl = document.getElementById('status');
+
+    if (data.status === "Running") {
+        statusEl.innerHTML = "🟢 Running";
+        statusEl.style.color = "#22c55e";
+    } else {
+        statusEl.innerHTML = "🔴 Down";
+        statusEl.style.color = "red";
+    }
+
     document.getElementById('version').innerText = data.version || "N/A";
+
+    updateChart(); // 🔥 live update
 }
 
-/* 📊 CHART (FIXED) */
-new Chart(document.getElementById('chart'), {
-    type: 'line',
-    data: {
-        labels: ["1","2","3","4","5"],
-        datasets: [{
-            label: "API Performance (ms)",
-            data: [100, 80, 120, 90, 70],
-            borderColor: "#22c55e",
-            backgroundColor: "rgba(34,197,94,0.2)",
-            fill: true,
-            tension: 0.4
-        }]
-    },
-    options: {
-        plugins: {
-            legend: {
-                labels: {
-                    color: "white"
-                }
-            }
+/* 🔄 AUTO REFRESH EVERY 5 SEC */
+function startAutoRefresh() {
+    setInterval(() => {
+        loadData();
+    }, 5000);
+}
+
+/* 📊 CHART (LIVE) */
+let chart;
+
+function createChart() {
+    chart = new Chart(document.getElementById('chart'), {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: "Response Time (ms)",
+                data: [],
+                borderColor: "#22c55e",
+                backgroundColor: "rgba(34,197,94,0.2)",
+                fill: true,
+                tension: 0.4
+            }]
         },
-        scales: {
-            x: {
-                ticks: { color: "white" }
+        options: {
+            plugins: {
+                legend: { labels: { color: "white" } }
             },
-            y: {
-                ticks: { color: "white" }
+            scales: {
+                x: { ticks: { color: "white" } },
+                y: { ticks: { color: "white" } }
             }
         }
-    }
-});
+    });
+}
 
-/* 📜 LOGS */
+/* 📈 UPDATE CHART WITH RANDOM REALISTIC DATA */
+function updateChart() {
+    if (!chart) return;
+
+    const time = new Date().toLocaleTimeString();
+    const value = Math.floor(Math.random() * 50) + 70; // simulate API time
+
+    chart.data.labels.push(time);
+    chart.data.datasets[0].data.push(value);
+
+    if (chart.data.labels.length > 10) {
+        chart.data.labels.shift();
+        chart.data.datasets[0].data.shift();
+    }
+
+    chart.update();
+}
+
+/* 📜 ANIMATED LOGS */
 function generateLogs() {
     const logs = document.getElementById("logs");
-    const msgs = ["Deploying...", "Running tests...", "Building Docker...", "Live!"];
+    const msgs = [
+        "🚀 Deploy started...",
+        "🧪 Running tests...",
+        "🐳 Building Docker image...",
+        "📦 Pushing to registry...",
+        "☁️ Deploying to Render...",
+        "✅ Live in production!"
+    ];
+
     let i = 0;
 
     setInterval(() => {
         if (i < msgs.length) {
             logs.innerHTML += "<br>" + msgs[i];
+            logs.scrollTop = logs.scrollHeight;
             i++;
         }
-    }, 1000);
+    }, 1200);
 }
+
+/* INIT CHART */
+createChart();
 
 </script>
 
