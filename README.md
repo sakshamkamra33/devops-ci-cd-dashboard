@@ -118,9 +118,18 @@ docker run -p 5000:5000 devops-dashboard
 
   ---
 
-📸 Preview
+## 📸 Preview  
 
+### Dashboard Overview
+![Dashboard](assets/dashboard-1.png)
 
+### Metrics & Monitoring
+![Metrics](assets/dashboard-2.png)
+
+### Deployment & Logs
+![Logs](assets/dashboard-3.png)
+
+---
 
 👨‍💻 Author
 
