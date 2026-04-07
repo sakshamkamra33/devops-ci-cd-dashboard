@@ -1,81 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>DevOps Dashboard</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DevOps Dashboard</title>
 
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
 
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #0f172a, #1e293b);
-            color: white;
-            text-align: center;
-        }
+<style>
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(270deg, #0f172a, #1e293b, #0f172a);
+    background-size: 400% 400%;
+    animation: gradientBG 10s ease infinite;
+    color: white;
+}
 
-        .container {
-            margin-top: 80px;
-        }
+@keyframes gradientBG {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+}
 
-        h1 {
-            font-size: 40px;
-            margin-bottom: 10px;
-        }
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px 40px;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(10px);
+}
 
-        .subtitle {
-            color: #94a3b8;
-            margin-bottom: 40px;
-        }
+.logo {
+    font-weight: 700;
+    font-size: 20px;
+}
 
-        .card {
-            background: #1e293b;
-            padding: 25px;
-            margin: 20px auto;
-            width: 300px;
-            border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-        }
+.container {
+    text-align: center;
+    margin-top: 60px;
+}
 
-        .status {
-            font-size: 20px;
-            font-weight: bold;
-            color: #22c55e;
-        }
+h1 {
+    font-size: 42px;
+}
 
-        .version {
-            color: #38bdf8;
-        }
+.subtitle {
+    color: #94a3b8;
+    margin-bottom: 40px;
+}
 
-        button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            background: #22c55e;
-            color: black;
-            font-weight: bold;
-            cursor: pointer;
-        }
+.cards {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+}
 
-        button:hover {
-            background: #16a34a;
-        }
-    </style>
+.card {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+    padding: 30px;
+    width: 280px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+}
+
+.status-badge {
+    padding: 8px 15px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.running {
+    background: #22c55e;
+    color: black;
+}
+
+.down {
+    background: red;
+}
+
+button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: none;
+    background: #22c55e;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #16a34a;
+}
+
+.footer {
+    margin-top: 60px;
+    padding: 20px;
+    text-align: center;
+    color: #94a3b8;
+}
+</style>
 </head>
+
 <body>
 
-    <div class="container">
-        <h1>🚀 DevOps Dashboard</h1>
-        <p class="subtitle">CI/CD + Docker + GitHub Actions + Render</p>
+<div class="navbar">
+    <div class="logo">🚀 DevOps Dashboard</div>
+    <div>CI/CD Pipeline</div>
+</div>
+
+<div class="container">
+    <h1>Production Monitoring</h1>
+    <p class="subtitle">Live Deployment Status & API Health</p>
+
+    <div class="cards">
 
         <div class="card">
             <h2>Status</h2>
-            <p class="status" id="status">Loading...</p>
-            <p class="version" id="version"></p>
+            <div id="badge" class="status-badge">Checking...</div>
+            <p id="version"></p>
             <button onclick="loadStatus()">Refresh</button>
         </div>
 
@@ -83,25 +135,40 @@
             <h2>About</h2>
             <p id="about">Loading...</p>
         </div>
+
     </div>
+</div>
 
-    <script>
-        async function loadStatus() {
-            const res = await fetch('/status');
-            const data = await res.json();
-            document.getElementById('status').innerText = data.status;
-            document.getElementById('version').innerText = "Version: " + data.version;
-        }
+<div class="footer">
+    Built with ❤️ using Flask, Docker & CI/CD
+</div>
 
-        async function loadAbout() {
-            const res = await fetch('/about');
-            const data = await res.json();
-            document.getElementById('about').innerText = data.message;
-        }
+<script>
+async function loadStatus() {
+    const res = await fetch('/status');
+    const data = await res.json();
 
-        loadStatus();
-        loadAbout();
-    </script>
+    const badge = document.getElementById('badge');
+    badge.innerText = data.status;
+
+    if (data.status.toLowerCase() === "running") {
+        badge.className = "status-badge running";
+    } else {
+        badge.className = "status-badge down";
+    }
+
+    document.getElementById('version').innerText = "Version: " + data.version;
+}
+
+async function loadAbout() {
+    const res = await fetch('/about');
+    const data = await res.json();
+    document.getElementById('about').innerText = data.message;
+}
+
+loadStatus();
+loadAbout();
+</script>
 
 </body>
 </html>
