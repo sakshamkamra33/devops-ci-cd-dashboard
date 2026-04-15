@@ -99,7 +99,7 @@ devops-project/
 ## ▶️ Run Locally
 
 ```bash
-git clone https://github.com/sakshamkamra33/devops-project.git
+git clone https://github.com/sakshamkamra33/devops-ci-cd-dashboard.git
 cd devops-project
 pip install -r requirements.txt
 python app.py
